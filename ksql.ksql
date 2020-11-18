@@ -1,0 +1,14 @@
+CREATE STREAM TWITTER_MESSAGES(
+    in_reply_to_status_id_str varchar,
+    favorited boolean,
+    lang varchar,
+    filter_level varchar,
+    text varchar,
+    in_reply_to_user_id bigint,
+    retweeted boolean,
+    _timestamp varchar,
+    truncated boolean,
+    quote_count bigint,
+    id_str varchar,
+    favorite_count bigint
+) WITH (KAFKA_TOPIC='twitter_messages', VALUE_FORMAT='JSON', PARTITIONS=1, REPLICAS=1);

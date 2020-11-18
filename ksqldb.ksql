@@ -1,0 +1,44 @@
+CREATE STREAM TWITTER_MESSAGES(    
+    client varchar,
+    
+    tweet_id int,
+    date varchar,
+    user_name varchar,
+    text varchar,
+    location varchar,
+    language varchar,
+	geo varchar,
+	coordinates varchar,
+	place varchar,
+	hashtags array<struct<text varchar, indices array<int>>>,
+    urls array<struct<url varchar, expanded_url varchar, display_url varchar, indices array<int>>>,
+    user_mentions array<struct<screen_name varchar, name varchar, id bigint, id_str varchar, indices array<int>>>,
+    retweeted boolean,
+    quoted boolean
+) WITH (KAFKA_TOPIC='twitter_messages', VALUE_FORMAT='JSON', PARTITIONS=1, REPLICAS=1);
+
+CREATE TABLE USER_POST_COUNT AS
+SELECT
+    USER_NAME,
+    COUNT(1) AS QTD_POSTS
+FROM
+    TWITTER_MESSAGES
+GROUP BY
+    USER_NAME
+
+
+CREATE TABLE POSTS_LOCATION_COUNT AS
+SELECT  
+    LOCATION,
+    COUNT(1) AS COUNT
+FROM
+    TWITTER_MESSAGES
+WHERE
+    LOCATION IS NOT NULL
+GROUP BY
+    LOCATION;
+
+create stream posts_hashtags as
+select explode(hashtags) as hashtag from twitter_messages where hashtags is not null emit changes;
+
+create table count_hashtags as select hashtag->text, count() from posts_hashtags group by hashtag->text emit changes;
