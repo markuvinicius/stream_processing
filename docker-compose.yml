@@ -32,6 +32,7 @@ services:
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
       CONFLUENT_METRICS_ENABLE: 'true'
       CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
+      KAFKA_ADVERTISED_LISTENERS: "192.168.1.109:9092"
 
   #connect:
   #  image: cnfldemos/cp-server-connect-datagen:0.3.1-5.4.1
